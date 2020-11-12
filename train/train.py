@@ -3,13 +3,13 @@ import json
 import os
 import pickle
 import sys
-import sagemaker_containers
+# import sagemaker_containers
 import pandas as pd
 import torch
 import torch.optim as optim
 import torch.utils.data
 
-from model import LSTMClassifier
+# from model import LSTMClassifier
 
 def model_fn(model_dir):
     """Load the PyTorch model from the `model_dir` directory."""
@@ -67,9 +67,31 @@ def train(model, train_loader, epochs, optimizer, loss_fn, device):
     device       - Where the model and data should be loaded (gpu or cpu).
     """
     
-    # TODO: Paste the train() method developed in the notebook here.
-
-    pass
+    # DONE: Paste the train() method developed in the notebook here.
+    for epoch in range(1, epochs + 1):
+        model.train()
+        total_loss = 0
+        for batch in train_loader:         
+            batch_X, batch_y = batch
+            
+            batch_X = batch_X.to(device)
+            batch_y = batch_y.to(device)
+            
+            # TODO: Complete this train method to train the model provided.
+            
+            #forward 
+            output = model.forward(batch_X)
+            #loss
+            loss = loss_fn(output,batch_y) 
+            # back propagation 
+            loss.backward()
+            # step function
+            optimizer.step()
+            
+            
+            total_loss += loss.data.item()
+        print("Epoch: {}, BCELoss: {}".format(epoch, total_loss / len(train_loader)))
+#     pass
 
 
 if __name__ == '__main__':
